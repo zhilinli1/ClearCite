@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ClearCite — is your AI use allowed, and how do you cite it?</title>
+<meta name="description" content="A policy-aware checklist that returns a live verdict on your AI use, and a citation generator for MLA 9, APA 7, Chicago 18 and IB transparency. Works offline. Nothing you type leaves the page.">
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="styles.css">
+<script>
+/* Theme before first paint, so a page opened at night does not flash white. */
+(function(){try{var t=localStorage.getItem('clearcite.theme');
+if(t!=='light'&&t!=='dark'){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+</head>
+<body id="top">
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<svg class="sprite" aria-hidden="true" focusable="false"><defs>
+<symbol id="i-tick" viewBox="0 0 20 20"><polyline points="5 10.4 8.6 14 15 6.6"/></symbol>
+<symbol id="i-check" viewBox="0 0 20 20"><polyline points="4 10.5 8 14.5 16 5.5"/></symbol>
+<symbol id="i-copy" viewBox="0 0 20 20"><rect x="7" y="7" width="9" height="9"/><path d="M13 7V5.5A1.5 1.5 0 0 0 11.5 4H5.5A1.5 1.5 0 0 0 4 5.5v6A1.5 1.5 0 0 0 5.5 13H7"/></symbol>
+<symbol id="i-plus" viewBox="0 0 20 20"><path d="M10 4.5v11M4.5 10h11"/></symbol>
+<symbol id="i-ban" viewBox="0 0 20 20"><circle cx="10" cy="10" r="6.8"/><path d="M5.2 5.2l9.6 9.6"/></symbol>
+<symbol id="i-help" viewBox="0 0 20 20"><circle cx="10" cy="10" r="6.8"/><path d="M7.9 7.7a2.2 2.2 0 1 1 3 2c-.6.3-.9.8-.9 1.5v.5"/><circle cx="10" cy="14.3" r=".8" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-minus" viewBox="0 0 20 20"><circle cx="10" cy="10" r="6.8"/><path d="M6.6 10h6.8"/></symbol>
+<symbol id="i-lines" viewBox="0 0 20 20"><path d="M4 6.2h12M4 10h12M4 13.8h7"/></symbol>
+<symbol id="i-quote" viewBox="0 0 20 20"><path d="M8.6 7.4v2.8c0 1.4-.9 2.4-2.3 2.8M14.2 7.4v2.8c0 1.4-.9 2.4-2.3 2.8"/></symbol>
+<symbol id="i-dashed" viewBox="0 0 20 20"><circle cx="10" cy="10" r="6.8" stroke-dasharray="2.4 2.6"/></symbol>
+<symbol id="i-chev-up" viewBox="0 0 20 20"><path d="M5.2 12.6L10 7.8l4.8 4.8"/></symbol>
+<symbol id="i-chev-down" viewBox="0 0 20 20"><path d="M5.2 7.4L10 12.2l4.8-4.8"/></symbol>
+<symbol id="i-alert" viewBox="0 0 20 20"><path d="M10 3.6l7 12.8H3z"/><path d="M10 8.2v3.4"/><circle cx="10" cy="13.9" r=".8" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-up" viewBox="0 0 20 20"><path d="M10 16V4.4M5.6 8.8L10 4.4l4.4 4.4"/></symbol>
+<symbol id="i-down" viewBox="0 0 20 20"><path d="M10 4v11.6M5.6 11.2L10 15.6l4.4-4.4"/></symbol>
+<symbol id="i-trash" viewBox="0 0 20 20"><path d="M4.4 6.4h11.2M8 6.4V4.6h4v1.8M6 6.4l.7 9.2h6.6l.7-9.2"/></symbol>
+<symbol id="i-x" viewBox="0 0 20 20"><path d="M5.6 5.6l8.8 8.8M14.4 5.6l-8.8 8.8"/></symbol>
+<symbol id="i-sun" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3.3"/><path d="M10 3.2v1.5M10 15.3v1.5M3.2 10h1.5M15.3 10h1.5M5.2 5.2l1.1 1.1M13.7 13.7l1.1 1.1M14.8 5.2l-1.1 1.1M6.3 13.7l-1.1 1.1"/></symbol>
+<symbol id="i-moon" viewBox="0 0 20 20"><path d="M15.6 12.5A6.3 6.3 0 0 1 7.5 4.4a6.4 6.4 0 1 0 8.1 8.1z"/></symbol>
+<symbol id="i-print" viewBox="0 0 20 20"><path d="M6 6.8V3.6h8v3.2M6 14.4H4.6A1.6 1.6 0 0 1 3 12.8V9.2a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3.6a1.6 1.6 0 0 1-1.6 1.6H14"/><rect x="6" y="11.8" width="8" height="4.8"/></symbol>
+</defs></svg>
+
+<header class="site-header">
+  <div class="shell header-row">
+    <a class="wordmark" href="#top">ClearCite</a>
+    <nav class="site-nav" aria-label="Sections">
+      <a href="#check">Check</a>
+      <a href="#cite">Cite</a>
+      <a href="#list">My list</a>
+      <a href="#policy">Policy</a>
+    </nav>
+    <label class="lang-pick" for="lang">
+      <span class="sr-only">Language</span>
+      <select id="lang">
+        <option value="en">English</option>
+        <option value="zh-Hans">简体中文</option>
+        <option value="zh-Hant">繁體中文</option>
+        <option value="fr">Français</option>
+        <option value="es">Español</option>
+      </select>
+    </label>
+    <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false">
+      <svg class="icon theme-on-dark" aria-hidden="true"><use href="#i-sun"/></svg>
+      <svg class="icon theme-on-light" aria-hidden="true"><use href="#i-moon"/></svg>
+      <span id="theme-label">Switch to dark theme</span>
+    </button>
+  </div>
+</header>
+
+<div class="setup" id="setup">
+  <div class="shell setup-row">
+    <fieldset class="pills" id="program-field">
+      <legend class="sr-only">Program</legend>
+      <label class="pill"><input type="radio" name="program" value="ib" checked><span class="pill-face">IB</span></label>
+      <label class="pill"><input type="radio" name="program" value="ap"><span class="pill-face">AP®</span></label>
+      <label class="pill"><input type="radio" name="program" value="bc"><span class="pill-face">BC</span></label>
+      <label class="pill"><input type="radio" name="program" value="gen"><span class="pill-face">General</span></label>
+    </fieldset>
+    <div class="setup-course">
+      <label class="setup-label" for="course">Course</label>
+      <div class="select-wrap">
+        <select id="course">
+          <option value="general">General / Interdisciplinary</option>
+          <option value="lang-lit">Group 1 · English Literature / Lang &amp; Lit</option>
+          <option value="lang-acq">Language Acquisition · World Languages</option>
+          <option value="humanities">Individuals &amp; Societies · History · TOK · EE · Capstone</option>
+          <option value="stem">Sciences &amp; Mathematics</option>
+          <option value="cs">Computer Science &amp; Coding</option>
+          <option value="arts">Visual Arts &amp; Design</option>
+          <option value="careers">Career-Life Connections / Capstone</option>
+        </select>
+        <svg class="icon select-chevron" aria-hidden="true"><use href="#i-chev-down"/></svg>
+      </div>
+    </div>
+    <fieldset class="seg" id="strictness-field">
+      <legend class="sr-only">Strictness</legend>
+      <label class="seg-item"><input type="radio" name="strictness" value="conservative"><span class="seg-face">Conservative</span></label>
+      <label class="seg-item"><input type="radio" name="strictness" value="mixed" checked><span class="seg-face">Mixed</span></label>
+      <label class="seg-item"><input type="radio" name="strictness" value="aggressive"><span class="seg-face">Aggressive</span></label>
+    </fieldset>
+    <p class="seg-blurb" id="seg-blurb">Policy default for IB, AP and BC.</p>
+  </div>
+  <div class="shell setup-note-row">
+    <p class="setup-note" id="program-note"><b>General</b> · General Canada / US · District or school-level academic integrity policy</p>
+    <p class="lens" id="course-note" hidden></p>
+  </div>
+  <div class="shell" id="storage-notice-wrap"></div>
+</div>
+
+<main id="main">
+  <!-- 00 · Hero -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="shell">
+      <h1 class="hero-title" id="hero-title">Is your AI use allowed — and how do you cite it?</h1>
+      <p class="hero-promise">Two answers in about a minute: what your program permits, and a citation you can paste at the end of your work.</p>
+      <ol class="hero-steps">
+        <li class="step"><span class="step-num" aria-hidden="true">01</span><span class="step-label"><span class="step-long">Choose your program</span><span class="step-short">Check</span></span><span class="step-desc">IB, AP, BC or your school's own policy</span></li>
+        <li class="step"><span class="step-num" aria-hidden="true">02</span><span class="step-label"><span class="step-long">Answer the questions</span><span class="step-short">Answer</span></span><span class="step-desc">The verdict updates as you go</span></li>
+        <li class="step"><span class="step-num" aria-hidden="true">03</span><span class="step-label"><span class="step-long">Copy the citation</span><span class="step-short">Copy</span></span><span class="step-desc">Five styles, one click each</span></li>
+      </ol>
+      <p class="hero-disclaimer">Independent study aid. Not official IB, AP or BC guidance. Nothing you type leaves this page.</p>
+    </div>
+  </section>
+
+  <!-- 01 · Check -->
+  <section class="section" id="check" aria-labelledby="check-title">
+    <div class="shell">
+      <div class="section-head">
+        <span class="section-num" aria-hidden="true">01</span>
+        <h2 class="section-title" id="check-title">Check</h2>
+        <span class="section-desc">checklist · live verdict</span>
+      </div>
+      <div class="check-grid">
+        <div class="verdict-inline" id="verdict-inline"></div>
+        <div class="check-main">
+          <fieldset class="panel" id="section-a" aria-describedby="section-a-desc">
+            <legend class="sr-only">Section A · Context</legend>
+            <div class="group-head" aria-hidden="true"><span class="group-title">Section A · Context</span><span class="group-count" id="count-a">0 / 3</span></div>
+            <p class="group-desc" id="section-a-desc">Three questions about the assignment and your teacher. They change how strict the answer is, not whether you used AI.</p>
+            <ul class="rows" id="rows-a"></ul>
+          </fieldset>
+
+          <div id="warnings"></div>
+
+          <fieldset class="panel survey" id="section-b1" aria-describedby="b1-desc">
+            <legend class="sr-only">Getting started</legend>
+            <div class="group-head" aria-hidden="true"><span class="group-title">Getting started</span><span class="group-count" id="count-b1">0 / 4</span></div>
+            <p class="group-desc" id="b1-desc">How you found your topic, your question and your sources. These are questions about what you did, not a test — nothing here is recorded or sent.</p>
+            <ul class="rows" id="rows-b1"></ul>
+          </fieldset>
+
+          <fieldset class="panel survey" id="section-b2" aria-describedby="b2-desc">
+            <legend class="sr-only">Working on your draft</legend>
+            <div class="group-head" aria-hidden="true"><span class="group-title">Working on your draft</span><span class="group-count" id="count-b2">0 / 6</span></div>
+            <p class="group-desc" id="b2-desc">What the tool did to your writing, and what you did with what it gave you.</p>
+            <ul class="rows" id="rows-b2"></ul>
+          </fieldset>
+
+          <fieldset class="panel survey" id="section-b3" aria-describedby="b3-desc">
+            <legend class="sr-only">What is in the final piece</legend>
+            <div class="group-head" aria-hidden="true"><span class="group-title">What is in the final piece</span><span class="group-count" id="count-b3">0 / 5</span></div>
+            <p class="group-desc" id="b3-desc">What a reader would find in the version you submit, including reflections and artwork.</p>
+            <ul class="rows" id="rows-b3"></ul>
+          </fieldset>
+        </div>
+        <div class="check-rail" id="verdict-rail">
+          <div class="verdict is-empty" id="verdict-panel" aria-labelledby="verdict-title">
+            <div class="v-head">
+              <p class="v-eyebrow"><svg class="icon" aria-hidden="true"><use href="#i-dashed"/></svg><span id="verdict-eyebrow">Verdict</span></p>
+              <h3 class="v-title" id="verdict-title">Nothing selected yet</h3>
+            </div>
+            <div class="v-body">
+              <p class="v-summary">Answer the questions. The verdict updates as you go.</p>
+              <p class="v-extra">Nothing is sent anywhere — this page runs entirely in your browser. You can change any answer.</p>
+              <noscript><p class="v-extra">The verdict needs JavaScript. The checklist and the policy cards below still work.</p></noscript>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 · Cite -->
+  <section class="section" id="cite" aria-labelledby="cite-title">
+    <div class="shell">
+      <div class="section-head">
+        <span class="section-num" aria-hidden="true">02</span>
+        <h2 class="section-title" id="cite-title">Cite</h2>
+        <span class="section-desc">citation output</span>
+      </div>
+      <div class="cite-grid">
+        <form class="cite-form" id="cite-form" novalidate autocomplete="off">
+          <fieldset class="field-group style-first">
+            <legend class="group-legend">Citation style</legend>
+            <div class="style-pick" id="style-pick" role="radiogroup" aria-label="Citation style"></div>
+            <p class="helper" id="style-help"></p>
+          </fieldset>
+
+          <fieldset class="field-group">
+            <legend class="group-legend">Which tool</legend>
+            <label class="field-label" for="harness">Which tool did you use?</label>
+            <div class="select-wrap">
+              <select id="harness"><option value="">Choose the tool you used</option></select>
+              <svg class="icon select-chevron" aria-hidden="true"><use href="#i-chev-down"/></svg>
+            </div>
+            <p class="helper" id="harness-help" hidden>Choose the tool you used so the citation names the right container.</p>
+            <div class="sub-field" id="harness-custom-wrap" hidden>
+              <label class="field-label" for="harness-custom">Tool name</label>
+              <input class="input" type="text" id="harness-custom" maxlength="60" placeholder="Name the tool exactly as it appears — e.g. School AI tutor">
+              <p class="helper" id="harness-custom-help" hidden>Add a name so the citation reads correctly.</p>
+            </div>
+            <p class="model-line" id="model-line">Model family: not set — choose one if you know it.</p>
+            <div class="sub-field" id="family-wrap">
+              <label class="field-label" for="family">Model family</label>
+              <div class="select-wrap">
+                <select id="family">
+                  <optgroup label="Families">
+                    <option value="">Not set</option>
+                    <option value="Gemini">Gemini</option>
+                    <option value="GPT">GPT</option>
+                    <option value="Claude">Claude</option>
+                    <option value="DeepSeek">DeepSeek</option>
+                    <option value="Qwen">Qwen</option>
+                    <option value="Llama">Llama</option>
+                    <option value="Mistral">Mistral</option>
+                    <option value="Grok">Grok</option>
+                    <option value="Midjourney">Midjourney</option>
+                    <option value="DALL·E">DALL·E</option>
+                    <option value="Stable Diffusion">Stable Diffusion</option>
+                    <option value="Doubao">Doubao</option>
+                    <option value="ERNIE">ERNIE</option>
+                    <option value="Hunyuan">Hunyuan</option>
+                    <option value="MiniMax">MiniMax</option>
+                    <option value="MiMo">MiMo</option>
+                    <option value="Nemotron">Nemotron</option>
+                  </optgroup>
+                  <optgroup label="Custom">
+                    <option value="Muse">Muse</option>
+                    <option value="Inkling">Inkling</option>
+                    <option value="Other">Other</option>
+                  </optgroup>
+                </select>
+                <svg class="icon select-chevron" aria-hidden="true"><use href="#i-chev-down"/></svg>
+              </div>
+              <div class="sub-field" id="family-custom-wrap" hidden>
+                <label class="field-label" for="family-custom">Model family name</label>
+                <input class="input" type="text" id="family-custom" maxlength="60" placeholder="Name the model family as you would cite it">
+              </div>
+            </div>
+            <div class="sub-field">
+              <label class="field-label" for="model-name">Exact model <span class="opt">(optional)</span></label>
+              <input class="input" type="text" id="model-name" maxlength="80" placeholder="GPT-6 Luna · Claude Opus 5.5 · DeepSeek-v4.1-flash">
+              <p class="helper">If you know the exact model you used, you should fill it in here. If you do not know, skip this section.</p>
+              <p class="preview" id="model-preview"></p>
+            </div>
+          </fieldset>
+
+          <fieldset class="field-group">
+            <legend class="group-legend">What you asked</legend>
+            <label class="field-label" for="prompt">The prompt you sent</label>
+            <textarea class="input textarea" id="prompt" rows="4" placeholder="Summarise the counter-arguments to planned obsolescence in consumer electronics"></textarea>
+            <p class="counter" id="prompt-counter" hidden></p>
+            <p class="helper" id="prompt-required" hidden>The prompt is required. Every style quotes or summarises it.</p>
+            <p class="helper">Paste the exact words you sent. Every style quotes or summarises it, and your teacher may ask to see it.</p>
+          </fieldset>
+
+          <fieldset class="field-group">
+            <legend class="group-legend">When</legend>
+            <label class="field-label" for="date">Date of the chat</label>
+            <input class="input" type="date" id="date">
+            <p class="helper" id="date-help" hidden>We used today's date. Change it if the chat was on another day.</p>
+          </fieldset>
+
+          <fieldset class="field-group">
+            <legend class="group-legend">Where</legend>
+            <label class="field-label" for="url">Share link</label>
+            <input class="input" type="text" id="url" inputmode="url" placeholder="https://chatgpt.com/share/…">
+            <p class="helper" id="url-help" hidden>That does not look like a link. It will print as you typed it.</p>
+            <p class="warn-inline" id="url-warn" hidden></p>
+            <p class="helper" id="url-style" hidden></p>
+            <label class="check-inline"><input type="checkbox" id="url-public"><span class="box" aria-hidden="true"><svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><use href="#i-tick"/></svg></span><span class="row-text">Anyone with this link can open the chat.</span></label>
+            <p class="helper">Optional. Styles differ: Chicago needs a link a reader can open.</p>
+            <p class="helper">Chicago only lists AI chats in a bibliography when a reader can open the link.</p>
+          </fieldset>
+
+          <p class="ready-count" id="ready-count" hidden></p>
+
+          <button type="button" class="adv-toggle" id="adv-toggle" aria-expanded="false" aria-controls="advanced">
+            <span class="adv-label" id="adv-label">More details — optional: content type, edits, tool name</span>
+            <svg class="icon adv-plus" aria-hidden="true"><use href="#i-plus"/></svg>
+          </button>
+
+          <div class="adv-panel" id="advanced" hidden>
+            <div class="field-group">
+              <label class="field-label" for="content-type">Content type</label>
+              <div class="select-wrap">
+                <select id="content-type">
+                  <option value="quoted">Quoted AI text</option>
+                  <option value="paraphrased">Paraphrased or adapted AI explanation</option>
+                  <option value="image">AI image, chart or code</option>
+                  <option value="outline">Outline or structure only</option>
+                </select>
+                <svg class="icon select-chevron" aria-hidden="true"><use href="#i-chev-down"/></svg>
+              </div>
+              <p class="helper">We set this from your checklist. Change it if it is wrong.</p>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="edits">What you changed</label>
+              <input class="input" type="text" id="edits" maxlength="240" placeholder="Edited for length">
+              <p class="counter" id="edits-counter" hidden>Keep this short — it is one clause in the citation.</p>
+            </div>
+            <div class="field-group">
+              <label class="check-inline"><input type="checkbox" id="include-harness" checked><span class="box" aria-hidden="true"><svg class="tick" viewBox="0 0 20 20" aria-hidden="true"><use href="#i-tick"/></svg></span><span class="row-text">Name the tool in the citation</span></label>
+              <p class="helper" id="include-harness-help" hidden>MLA expects a container, so this will read oddly. APA and Chicago are unaffected.</p>
+            </div>
+          </div>
+
+          <button type="button" class="show-output" id="show-output" hidden>Show my citation ↓</button>
+        </form>
+
+        <div class="output-col">
+          <div class="output-stack" id="output-stack"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 · My list -->
+  <section class="section" id="list" aria-labelledby="list-title">
+    <div class="shell">
+      <div class="section-head">
+        <span class="section-num" aria-hidden="true">03</span>
+        <h2 class="section-title" id="list-title" tabindex="-1">My list</h2>
+        <span class="section-desc" id="list-count">saved locally</span>
+      </div>
+      <div id="list-actions-wrap"></div>
+      <div id="list-body"></div>
+    </div>
+  </section>
+
+  <!-- 04 · Policy -->
+  <section class="section" id="policy" aria-labelledby="policy-title">
+    <div class="shell">
+      <div class="section-head">
+        <span class="section-num" aria-hidden="true">04</span>
+        <h2 class="section-title" id="policy-title">Policy</h2>
+        <span class="section-desc">sources</span>
+      </div>
+      <p class="policy-lang" id="policy-lang-note" hidden></p>
+      <div class="accordions">
+        <div class="acc">
+          <button type="button" class="acc-btn" id="acc1-btn" aria-expanded="false" aria-controls="acc1-panel"><span class="acc-index" aria-hidden="true">§ 1</span><span class="acc-title">IB — the two questions</span><svg class="icon acc-plus" aria-hidden="true"><use href="#i-plus"/></svg></button>
+          <div class="acc-wrap" id="acc1-panel" role="region" aria-labelledby="acc1-btn" inert><div class="acc-panel">
+            <blockquote class="quote">
+              <p>Did the student use AI to help them learn? If so, then it is acceptable.</p>
+              <p>Did the student use AI to pretend they did something they did not? Then this is not acceptable.</p>
+              <footer>— <cite>Evaluating 13 scenarios of AI in student coursework</cite>, IB</footer>
+            </blockquote>
+            <ul class="scen-grid">
+              <li class="scen"><span class="scen-num" aria-hidden="true">01</span><div class="scen-body"><p class="scen-text">AI summarises key points and suggests references.</p><p class="scen-detail">Student must understand the points and express them in their own words. Anything copied must be cited.</p></div><span class="chip is-allowed"><i aria-hidden="true"></i>Acceptable</span></li>
+              <li class="scen"><span class="scen-num" aria-hidden="true">02</span><div class="scen-body"><p class="scen-text">AI summarises counter-positions, student explores them further.</p><p class="scen-detail">Ideas may be investigated like a textbook; arguments must not be presented as AI generated them.</p></div><span class="chip is-allowed"><i aria-hidden="true"></i>Acceptable</span></li>
+              <li class="scen"><span class="scen-num" aria-hidden="true">03</span><div class="scen-body"><p class="scen-text">AI finds quotations and the student copies them without checking.</p><p class="scen-detail">The student must open, read and understand each source before quoting.</p></div><span class="chip is-proh"><i aria-hidden="true"></i>Not acceptable</span></li>
+              <li class="scen"><span class="scen-num" aria-hidden="true">04</span><div class="scen-body"><p class="scen-text">AI develops the research question.</p><p class="scen-detail">Work with your teacher. AI may suggest examples only after the area is agreed.</p></div><span class="chip is-proh"><i aria-hidden="true"></i>Not acceptable</span></li>
+              <li class="scen"><span class="scen-num" aria-hidden="true">05</span><div class="scen-body"><p class="scen-text">AI writes a model essay the student rewrites.</p><p class="scen-detail">Treated like using someone else's essay. A viva may be used to check understanding.</p></div><span class="chip is-attn"><i aria-hidden="true"></i>Context</span></li>
+              <li class="scen"><span class="scen-num" aria-hidden="true">06</span><div class="scen-body"><p class="scen-text">AI writes a paragraph used as a model.</p><p class="scen-detail">Acceptable as a reference; the final argument must be the student's own.</p></div><span class="chip is-attn"><i aria-hidden="true"></i>Context</span></li>
+              <li class="scen"><span class="scen-num" aria-hidden="true">07</span><div class="scen-body"><p class="scen-text">Draft pasted into AI to be rewritten.</p><p class="scen-detail">Generally not acceptable. The original draft should be marked. Teacher discretion outside formal assessment.</p></div><span class="chip is-attn"><i aria-hidden="true"></i>Context</span></li>
+              <li class="scen"><span class="scen-num" aria-hidden="true">08</span><div class="scen-body"><p class="scen-text">Essay written in one language, AI-translated for submission.</p><p class="scen-detail">Also not acceptable in language acquisition. Bilingual dictionaries and spell checkers are fine elsewhere.</p></div><span class="chip is-proh"><i aria-hidden="true"></i>Not acceptable</span></li>
+              <li class="scen"><span class="scen-num" aria-hidden="true">09</span><div class="scen-body"><p class="scen-text">AI improves grammar and sentence construction, not a wholesale rewrite.</p><p class="scen-detail">Generally acceptable when language is not assessed and argument coherence is unchanged; the IB paper treats it as not acceptable for IB assessment. Disclose either way.</p></div><span class="chip-split"><span class="chip is-proh"><i aria-hidden="true"></i>Not acceptable</span><span class="chip-alt">elsewhere: context</span></span></li>
+              <li class="scen"><span class="scen-num" aria-hidden="true">10</span><div class="scen-body"><p class="scen-text">AI "marks" the work and gives feedback.</p><p class="scen-detail">Breaks the "one set of written feedback" rule. Fine for unassessed practice.</p></div><span class="chip-split"><span class="chip is-proh"><i aria-hidden="true"></i>Not acceptable</span><span class="chip-alt">elsewhere: context</span></span></li>
+              <li class="scen"><span class="scen-num" aria-hidden="true">11</span><div class="scen-body"><p class="scen-text">AI writes a reflection used unchanged.</p><p class="scen-detail">Reflection must describe the student's own process; the teacher attests to authenticity.</p></div><span class="chip is-proh"><i aria-hidden="true"></i>Not acceptable</span></li>
+              <li class="scen"><span class="scen-num" aria-hidden="true">12</span><div class="scen-body"><p class="scen-text">Student hides their AI use.</p><p class="scen-detail">Not acceptable even if the use itself was allowed. Transparency with the teacher authenticating the work is mandatory.</p></div><span class="chip is-proh"><i aria-hidden="true"></i>Not acceptable</span></li>
+              <li class="scen"><span class="scen-num" aria-hidden="true">13</span><div class="scen-body"><p class="scen-text">AI generates an essay structure or template.</p><p class="scen-detail">Acceptable if acknowledged when the work is submitted.</p></div><span class="chip is-attn"><i aria-hidden="true"></i>Context</span></li>
+            </ul>
+            <p class="policy-note">Scenario numbers refer to the IB's own paper. Where the paper says "not acceptable for IB assessment, probably acceptable elsewhere", both readings are shown rather than flattened.</p>
+          </div></div>
+        </div>
+
+        <div class="acc">
+          <button type="button" class="acc-btn" id="acc2-btn" aria-expanded="false" aria-controls="acc2-panel"><span class="acc-index" aria-hidden="true">§ 2</span><span class="acc-title">AP — course rules</span><svg class="icon acc-plus" aria-hidden="true"><use href="#i-plus"/></svg></button>
+          <div class="acc-wrap" id="acc2-panel" role="region" aria-labelledby="acc2-btn" inert><div class="acc-panel">
+            <h3 class="policy-h">AP Capstone (Seminar, Research) and AP African American Studies</h3>
+            <ul class="bullets">
+              <li>AI is optional, never mandatory.</li>
+              <li>Permitted as an aid for exploring potential topics of inquiry, initial searches for sources, confirming understanding of a complex text, and checking writing for grammar and tone.</li>
+              <li>Students must read primary and secondary sources directly, perform their own analysis and synthesis, and make their own choices about how to communicate.</li>
+              <li>Interim checkpoints with the teacher are required to receive a score. Failure to complete them results in a score of 0 on the associated task, and teachers affirm authenticity.</li>
+              <li>AP Seminar: a team or team member who does not follow the policy on the Team Multimedia Presentation receives a group score of 0 for that component.</li>
+            </ul>
+            <h3 class="policy-h">AP Art &amp; Design</h3>
+            <ul class="bullets">
+              <li>Generative AI may be used only during research, ideation, practice, experimentation and revision. Using it to create final submitted artwork is prohibited.</li>
+              <li>Generative features embedded in editing software — object creation, generative fill or expand, background replacement — count as generative and are not permitted in final artwork.</li>
+              <li>Non-generative editing (exposure, contrast, colour correction, cropping, minor cleanup) is allowed at all stages, including final artwork.</li>
+              <li>All AI use, generative or not, must be disclosed in the AP Digital Portfolio for both Sustained Investigation and Selected Works.</li>
+            </ul>
+            <h3 class="policy-h">AP Computer Science Principles</h3>
+            <ul class="bullets">
+              <li>Permitted as a supplementary resource for understanding coding principles, code development and debugging, consistent with peer-collaboration rules.</li>
+              <li>The student must review and understand the code and be able to explain it in detail on the end-of-course exam.</li>
+            </ul>
+            <h3 class="policy-h">AP World Languages and Cultures</h3>
+            <ul class="bullets">
+              <li>Permitted for exploring topics and locating target-language sources.</li>
+              <li>Students should engage with AI in the target language, read sources in the target language, and demonstrate their own language abilities.</li>
+            </ul>
+          </div></div>
+        </div>
+
+        <div class="acc">
+          <button type="button" class="acc-btn" id="acc3-btn" aria-expanded="false" aria-controls="acc3-panel"><span class="acc-index" aria-hidden="true">§ 3</span><span class="acc-title">BC — guardrails</span><svg class="icon acc-plus" aria-hidden="true"><use href="#i-plus"/></svg></button>
+          <div class="acc-wrap" id="acc3-panel" role="region" aria-labelledby="acc3-btn" inert><div class="acc-panel">
+            <ul class="bullets">
+              <li>"Ethical, responsible, and safe use of AI in K-12 education requires a human-centered approach that prioritizes meaningful learning experiences."</li>
+              <li>"Choices about the use of AI in the classroom are ultimately made by teachers based on the needs of the students."</li>
+              <li>"AI tools should be viewed as complements to human processes."</li>
+              <li>Privacy: personal information is protected under BC's <em>Freedom of Information and Protection of Privacy Act</em> (FOIPPA). Do not enter names, student numbers, or information about peers into tools your district has not approved.</li>
+              <li>Respect First Peoples Principles of Learning and Indigenous intellectual property. Do not feed Traditional Cultural Knowledge into AI tools or accept AI inventions about it.</li>
+              <li>Keep drafts, plans and prompt logs; verify claims against credible sources.</li>
+            </ul>
+          </div></div>
+        </div>
+
+        <div class="acc">
+          <button type="button" class="acc-btn" id="acc4-btn" aria-expanded="false" aria-controls="acc4-panel"><span class="acc-index" aria-hidden="true">§ 4</span><span class="acc-title">Sources</span><svg class="icon acc-plus" aria-hidden="true"><use href="#i-plus"/></svg></button>
+          <div class="acc-wrap" id="acc4-panel" role="region" aria-labelledby="acc4-btn" inert><div class="acc-panel">
+            <dl class="sources">
+              <dt>IB — AI in learning, teaching and assessment</dt>
+              <dd><a href="https://www.ibo.org/programmes/artificial-intelligence-ai-in-learning-teaching-and-assessment/">ibo.org</a> — IB position, referencing rules.</dd>
+              <dt>IB Academic integrity policy (Appendix 6, p. 53)</dt>
+              <dd><a href="https://www.ibo.org/globalassets/new-structure/programmes/shared-resources/pdfs/academic-integrity-policy-en.pdf">ibo.org (PDF)</a> — in-text and bibliography requirement, prompt and date.</dd>
+              <dt>IB — Evaluating 13 scenarios of AI in student coursework</dt>
+              <dd><a href="https://media.vsb.bc.ca/media/Default/frf/103/IB%20Evaluating%20AI%20Scenarios.pdf">media.vsb.bc.ca (PDF)</a> — scenario-by-scenario teacher guidance.</dd>
+              <dt>AP — Guidance for AI tools and other services (2026–27)</dt>
+              <dd><a href="https://apcentral.collegeboard.org/exam-administration-ordering-scores/administering-exams/exam-policies/artificial-intelligence-tools">apcentral.collegeboard.org</a> — Capstone, Art &amp; Design, CSP, world languages.</dd>
+              <dt>AP Capstone policies</dt>
+              <dd><a href="https://apcentral.collegeboard.org/courses/resources/ap-capstone-policies">apcentral.collegeboard.org</a> — checkpoints, authenticity affirmation.</dd>
+              <dt>AP Art &amp; Design plagiarism and AI policy guide</dt>
+              <dd><a href="https://apcentral.collegeboard.org/media/pdf/ap-art-and-design-plagiarism-and-artificial-intelligence-policy-guide.pdf">apcentral.collegeboard.org (PDF)</a> — generative versus non-generative tools.</dd>
+              <dt>BC — AI in education</dt>
+              <dd><a href="https://www2.gov.bc.ca/gov/content/education-training/k-12/administration/program-management/ai-in-education">www2.gov.bc.ca</a> — K–12 principles, local policy.</dd>
+              <dt>MLA Style Center — citing generative AI (updated Aug 2025)</dt>
+              <dd><a href="https://style.mla.org/citing-generative-ai-updated-revised/">style.mla.org</a> — MLA 9 template, container, model, share URL.</dd>
+              <dt>APA Style — citing generative AI (Sept 2025)</dt>
+              <dd><a href="https://apastyle.apa.org/blog/cite-generative-ai-references">apastyle.apa.org</a> — APA 7 reference formats.</dd>
+              <dt>Chicago Manual of Style</dt>
+              <dd><a href="https://www.chicagomanualofstyle.org/">chicagomanualofstyle.org</a> — Chicago 18 notes and bibliography.</dd>
+            </dl>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="shell">
+    <p class="footer-disclaimer">ClearCite is an independent study aid. It is not published or endorsed by the IB, the College Board or the BC Ministry of Education. Your school's policy and your teacher's instructions take precedence.</p>
+    <div class="footer-row">
+      <p class="footer-meta">Sources last reviewed November 2026.</p>
+      <button type="button" class="btn-link" id="reset-prefs">Reset saved settings</button>
+    </div>
+    <p class="footer-meta" id="reset-help" hidden>Nothing is saved in this browser.</p>
+  </div>
+</footer>
+
+<button type="button" class="vbar" id="vbar" aria-expanded="false" aria-controls="verdict-sheet" aria-label="Verdict: nothing selected yet. Open verdict details.">
+  <span class="vbar-dot" aria-hidden="true"></span>
+  <span class="vbar-eyebrow" id="vbar-eyebrow">Verdict</span>
+  <span class="vbar-title" id="vbar-title">Nothing selected yet</span>
+  <svg class="icon vbar-chev" aria-hidden="true"><use href="#i-chev-up"/></svg>
+</button>
+
+<div class="sheet-backdrop" id="sheet-backdrop" hidden></div>
+<div class="sheet" id="verdict-sheet" role="dialog" aria-modal="false" aria-labelledby="sheet-title" hidden>
+  <div class="sheet-handle" aria-hidden="true"></div>
+  <button type="button" class="sheet-close" id="sheet-close" aria-label="Close verdict details"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button>
+  <h2 class="sr-only" id="sheet-title" tabindex="-1">Verdict details</h2>
+  <div class="sheet-body" id="sheet-body"></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="sr-only" id="verdict-live" role="status" aria-live="polite" aria-atomic="true"></div>
+<div class="sr-only" id="copy-live" role="status" aria-live="polite"></div>
+<div class="sr-only" id="list-live" role="status" aria-live="polite"></div>
+
+<div class="print-sheet" id="print-sheet"></div>
+
+<script src="i18n.js"></script>
+<script src="app.js" defer></script>
+</body>
+</html>
